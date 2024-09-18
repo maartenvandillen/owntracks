@@ -3,6 +3,7 @@
     <string-array name="connectionModes">
         <item>MQTT</item>
         <item>HTTP</item>
+        <item>Firestore</item>
     </string-array>
     <string-array name="geocoders">
         <item>None</item>

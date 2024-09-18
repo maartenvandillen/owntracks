@@ -1,12 +1,12 @@
-package org.owntracks.android.di
+package it.vandillen.tracker.di
 
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ServiceComponent
 import dagger.hilt.android.scopes.ServiceScoped
-import org.owntracks.android.location.NoopGeofencingClient
-import org.owntracks.android.location.geofencing.GeofencingClient
+import it.vandillen.tracker.location.NoopGeofencingClient
+import it.vandillen.tracker.location.geofencing.GeofencingClient
 
 @InstallIn(ServiceComponent::class)
 @Module

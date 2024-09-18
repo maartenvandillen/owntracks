@@ -1,7 +1,7 @@
-package org.owntracks.android.preferences
+package it.vandillen.tracker.preferences
 
-import org.owntracks.android.preferences.types.ReverseGeocodeProvider
-import org.owntracks.android.ui.map.MapLayerStyle
+import it.vandillen.tracker.preferences.types.ReverseGeocodeProvider
+import it.vandillen.tracker.ui.map.MapLayerStyle
 
 val defaultReverseGeocodeProvider = ReverseGeocodeProvider.NONE
 val defaultMapLayerStyle = MapLayerStyle.OpenStreetMapNormal

@@ -3,7 +3,7 @@
 -optimizations !field/removal/writeonly,!field/marking/private,!class/merging/*,!code/allocation/variable
 
 # Keep our package
--keep public class org.owntracks.android.** {
+-keep public class it.vandillen.tracker.** {
   public protected private *;
 }
 

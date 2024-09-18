@@ -3,6 +3,7 @@
     <string-array name="connectionModeValues" translatable="false">
         <item>0</item>
         <item>3</item>
+        <item>100</item>
     </string-array>
     <string-array name="geocoderValues" translatable="false">
         <item>None</item>

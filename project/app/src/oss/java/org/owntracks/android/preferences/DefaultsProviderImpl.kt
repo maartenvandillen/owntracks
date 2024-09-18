@@ -1,8 +1,8 @@
-package org.owntracks.android.preferences
+package it.vandillen.tracker.preferences
 
 import kotlin.reflect.KProperty
-import org.owntracks.android.preferences.types.ReverseGeocodeProvider
-import org.owntracks.android.ui.map.MapLayerStyle
+import it.vandillen.tracker.preferences.types.ReverseGeocodeProvider
+import it.vandillen.tracker.ui.map.MapLayerStyle
 
 class DefaultsProviderImpl : DefaultsProvider {
   @Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")

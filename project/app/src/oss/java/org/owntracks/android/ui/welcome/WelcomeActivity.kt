@@ -1,4 +1,4 @@
-package org.owntracks.android.ui.welcome
+package it.vandillen.tracker.ui.welcome
 
 import dagger.hilt.android.AndroidEntryPoint
 

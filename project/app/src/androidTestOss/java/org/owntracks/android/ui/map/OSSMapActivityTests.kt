@@ -1,4 +1,4 @@
-package org.owntracks.android.ui.map
+package it.vandillen.tracker.ui.map
 
 import androidx.preference.PreferenceManager
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -9,13 +9,13 @@ import com.adevinta.android.barista.assertion.BaristaVisibilityAssertions.assert
 import com.adevinta.android.barista.interaction.BaristaDialogInteractions.clickDialogNegativeButton
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.owntracks.android.R
-import org.owntracks.android.preferences.Preferences
-import org.owntracks.android.testutils.TestWithAnActivity
-import org.owntracks.android.testutils.disableDeviceLocation
-import org.owntracks.android.testutils.enableDeviceLocation
-import org.owntracks.android.testutils.grantMapActivityPermissions
-import org.owntracks.android.testutils.setNotFirstStartPreferences
+import it.vandillen.tracker.R
+import it.vandillen.tracker.preferences.Preferences
+import it.vandillen.tracker.testutils.TestWithAnActivity
+import it.vandillen.tracker.testutils.disableDeviceLocation
+import it.vandillen.tracker.testutils.enableDeviceLocation
+import it.vandillen.tracker.testutils.grantMapActivityPermissions
+import it.vandillen.tracker.testutils.setNotFirstStartPreferences
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)

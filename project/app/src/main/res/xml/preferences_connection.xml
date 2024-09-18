@@ -31,7 +31,7 @@
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true"
             app:validationError="@string/preferencesHostValidationError" />
-        <org.owntracks.android.support.widgets.EditIntegerPreference
+        <it.vandillen.tracker.support.widgets.EditIntegerPreference
             android:digits="0123456789"
             android:inputType="number"
             android:lines="1"
@@ -96,7 +96,7 @@
             android:key="tls"
             android:title="@string/tls"
             app:iconSpaceReserved="false" />
-        <org.owntracks.android.ui.preferences.PopupMenuPreference
+        <it.vandillen.tracker.ui.preferences.PopupMenuPreference
             android:enabled="false"
             android:key="tlsClientCrt"
             android:title="@string/preferencesClientCrt"
@@ -115,7 +115,7 @@
         android:key="preferenceGroupParameters"
         app:iconSpaceReserved="false"
         app:title="@string/preferencesParameters">
-        <org.owntracks.android.support.widgets.EditIntegerPreference
+        <it.vandillen.tracker.support.widgets.EditIntegerPreference
             android:inputType="number"
             app:dialogMessage="@string/preferencesKeepaliveDialogMessage"
             app:iconSpaceReserved="false"

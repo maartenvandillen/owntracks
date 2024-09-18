@@ -1,7 +1,7 @@
-package org.owntracks.android.ui.map
+package it.vandillen.tracker.ui.map
 
-import org.owntracks.android.R
-import org.owntracks.android.preferences.types.FromConfiguration
+import it.vandillen.tracker.R
+import it.vandillen.tracker.preferences.types.FromConfiguration
 
 enum class MapLayerStyle {
   OpenStreetMapNormal,

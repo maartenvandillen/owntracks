@@ -8,7 +8,7 @@
 
         <variable
             name="vm"
-            type="org.owntracks.android.ui.waypoints.WaypointsViewModel" />
+            type="it.vandillen.tracker.ui.waypoints.WaypointsViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -20,7 +20,7 @@
             android:id="@+id/appbar"
             layout="@layout/appbar" />
 
-        <org.owntracks.android.support.widgets.RecyclerViewWithEmptyPlaceholder
+        <it.vandillen.tracker.support.widgets.RecyclerViewWithEmptyPlaceholder
             android:id="@+id/waypointsRecyclerView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"

@@ -1,4 +1,4 @@
-package org.owntracks.android.di
+package it.vandillen.tracker.di
 
 import android.content.Context
 import dagger.Module
@@ -7,8 +7,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import org.owntracks.android.location.AospLocationProviderClient
-import org.owntracks.android.location.LocationProviderClient
+import it.vandillen.tracker.location.AospLocationProviderClient
+import it.vandillen.tracker.location.LocationProviderClient
 
 @InstallIn(SingletonComponent::class)
 @Module

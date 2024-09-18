@@ -9,7 +9,7 @@
 
         <variable
             name="vm"
-            type="org.owntracks.android.ui.welcome.WelcomeViewModel" />
+            type="it.vandillen.tracker.ui.welcome.WelcomeViewModel" />
     </data>
 
     <RelativeLayout

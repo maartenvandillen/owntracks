@@ -1,4 +1,4 @@
-package org.owntracks.android.e2e
+package it.vandillen.tracker.e2e
 
 import androidx.preference.PreferenceManager
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -10,19 +10,19 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.owntracks.android.model.Parser
-import org.owntracks.android.model.messages.MessageLocation
-import org.owntracks.android.preferences.Preferences
-import org.owntracks.android.testutils.GPSMockDeviceLocation
-import org.owntracks.android.testutils.MockDeviceLocation
-import org.owntracks.android.testutils.TestWithAnActivity
-import org.owntracks.android.testutils.TestWithAnMQTTBroker
-import org.owntracks.android.testutils.TestWithAnMQTTBrokerImpl
-import org.owntracks.android.testutils.grantMapActivityPermissions
-import org.owntracks.android.testutils.reportLocationFromMap
-import org.owntracks.android.testutils.setNotFirstStartPreferences
-import org.owntracks.android.testutils.waitUntilActivityVisible
-import org.owntracks.android.ui.map.MapActivity
+import it.vandillen.tracker.model.Parser
+import it.vandillen.tracker.model.messages.MessageLocation
+import it.vandillen.tracker.preferences.Preferences
+import it.vandillen.tracker.testutils.GPSMockDeviceLocation
+import it.vandillen.tracker.testutils.MockDeviceLocation
+import it.vandillen.tracker.testutils.TestWithAnActivity
+import it.vandillen.tracker.testutils.TestWithAnMQTTBroker
+import it.vandillen.tracker.testutils.TestWithAnMQTTBrokerImpl
+import it.vandillen.tracker.testutils.grantMapActivityPermissions
+import it.vandillen.tracker.testutils.reportLocationFromMap
+import it.vandillen.tracker.testutils.setNotFirstStartPreferences
+import it.vandillen.tracker.testutils.waitUntilActivityVisible
+import it.vandillen.tracker.ui.map.MapActivity
 
 @OptIn(ExperimentalUnsignedTypes::class)
 @LargeTest

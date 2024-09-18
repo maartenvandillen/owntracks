@@ -1,4 +1,4 @@
-package org.owntracks.android.ui.map
+package it.vandillen.tracker.ui.map
 
 import android.app.Activity
 import dagger.Module
@@ -6,8 +6,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.scopes.ActivityScoped
-import org.owntracks.android.location.AospLocationProviderClient
-import org.owntracks.android.location.LocationProviderClient
+import it.vandillen.tracker.location.AospLocationProviderClient
+import it.vandillen.tracker.location.LocationProviderClient
 
 @InstallIn(ActivityComponent::class)
 @Module

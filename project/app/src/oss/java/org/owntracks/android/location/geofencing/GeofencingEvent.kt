@@ -1,4 +1,4 @@
-package org.owntracks.android.location.geofencing
+package it.vandillen.tracker.location.geofencing
 
 import android.content.Intent
 import android.location.Location

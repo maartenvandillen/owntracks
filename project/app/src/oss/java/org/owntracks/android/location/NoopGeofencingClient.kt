@@ -1,8 +1,8 @@
-package org.owntracks.android.location
+package it.vandillen.tracker.location
 
 import android.content.Context
-import org.owntracks.android.location.geofencing.GeofencingClient
-import org.owntracks.android.location.geofencing.GeofencingRequest
+import it.vandillen.tracker.location.geofencing.GeofencingClient
+import it.vandillen.tracker.location.geofencing.GeofencingRequest
 
 class NoopGeofencingClient : GeofencingClient {
   override fun removeGeofences(context: Context) {}

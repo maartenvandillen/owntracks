@@ -4,13 +4,13 @@
 
     <data>
 
-        <import type="org.owntracks.android.support.DateFormatter" />
+        <import type="it.vandillen.tracker.support.DateFormatter" />
 
         <import type="android.view.View" />
 
         <variable
             name="vm"
-            type="org.owntracks.android.ui.status.StatusViewModel" />
+            type="it.vandillen.tracker.ui.status.StatusViewModel" />
     </data>
 
 

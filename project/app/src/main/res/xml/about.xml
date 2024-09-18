@@ -44,7 +44,7 @@
         android:key="licensesScreen"
         android:summary="@string/preferencesLicensesSummary"
         android:title="@string/preferencesLicenses"
-        app:fragment="org.owntracks.android.ui.preferences.LicenseFragment" />
+        app:fragment="it.vandillen.tracker.ui.preferences.LicenseFragment" />
 
     <Preference
         android:icon="@drawable/ic_baseline_translate_24"

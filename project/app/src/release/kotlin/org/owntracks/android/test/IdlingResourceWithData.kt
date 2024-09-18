@@ -1,7 +1,7 @@
-package org.owntracks.android.test
+package it.vandillen.tracker.test
 
 import androidx.test.espresso.IdlingResource
-import org.owntracks.android.model.messages.MessageBase
+import it.vandillen.tracker.model.messages.MessageBase
 
 /**
  * Idling resource that tracks data. Noop implementation

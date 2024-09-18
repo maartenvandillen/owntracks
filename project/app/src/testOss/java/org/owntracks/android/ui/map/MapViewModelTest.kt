@@ -1,4 +1,4 @@
-package org.owntracks.android.ui.map
+package it.vandillen.tracker.ui.map
 
 import org.junit.Assert.assertTrue
 import org.junit.Test

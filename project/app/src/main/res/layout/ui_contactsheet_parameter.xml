@@ -67,7 +67,7 @@
                 app:autoSizeStepGranularity="1sp"
                 app:autoSizeTextType="uniform" />
 
-            <org.owntracks.android.ui.map.AutoResizingTextViewWithListener
+            <it.vandillen.tracker.ui.map.AutoResizingTextViewWithListener
                 style="@style/ListItemSecondary"
                 android:id="@+id/label"
                 android:layout_width="match_parent"

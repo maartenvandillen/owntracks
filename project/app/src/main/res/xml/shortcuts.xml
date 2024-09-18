@@ -9,8 +9,8 @@
         android:shortcutShortLabel="@string/viewLogs">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="org.owntracks.android.ui.status.logs.LogViewerActivity"
-            android:targetPackage="org.owntracks.android" />
+            android:targetClass="it.vandillen.tracker.ui.status.logs.LogViewerActivity"
+            android:targetPackage="it.vandillen.tracker" />
     </shortcut>
     <shortcut
         android:enabled="true"
@@ -20,7 +20,7 @@
         android:shortcutShortLabel="@string/title_activity_preferences">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="org.owntracks.android.ui.preferences.PreferencesActivity"
-            android:targetPackage="org.owntracks.android" />
+            android:targetClass="it.vandillen.tracker.ui.preferences.PreferencesActivity"
+            android:targetPackage="it.vandillen.tracker" />
     </shortcut>
 </shortcuts>

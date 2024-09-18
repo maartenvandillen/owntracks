@@ -9,6 +9,8 @@ plugins {
   kotlin("kapt")
   alias(libs.plugins.ktfmt)
   alias(libs.plugins.ksp)
+  // Google services Gradle plugin (for Firebase)
+//  id("com.google.gms.google-services")
 }
 
 apply<EspressoMetadataEmbeddingPlugin>()
@@ -24,10 +26,10 @@ val manuallySetVersion: Boolean = System.getenv("VERSION_CODE") != null
 
 android {
   compileSdk = 34
-  namespace = "org.owntracks.android"
+  namespace = "it.vandillen.tracker"
 
   defaultConfig {
-    applicationId = "org.owntracks.android"
+    applicationId = "it.vandillen.tracker"
     minSdk = 24
     targetSdk = 34
 
@@ -264,6 +266,9 @@ dependencies {
   // Connectivity
   implementation(libs.paho.mqttclient)
   implementation(libs.okhttp)
+  implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
+  implementation("com.google.firebase:firebase-analytics")
+  implementation("com.google.firebase:firebase-firestore")
 
   // Utility libraries
   implementation(libs.bundles.hilt)

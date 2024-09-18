@@ -8,7 +8,7 @@
 
         <variable
             name="contact"
-            type="org.owntracks.android.model.Contact" />
+            type="it.vandillen.tracker.model.Contact" />
 
         <variable
             name="coroutineScope"

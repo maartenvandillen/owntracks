@@ -14,32 +14,32 @@
     <Preference
         android:key="connectionScreen"
         android:title="@string/preferencesServer"
-        app:fragment="org.owntracks.android.ui.preferences.ConnectionFragment"
+        app:fragment="it.vandillen.tracker.ui.preferences.ConnectionFragment"
         app:icon="@drawable/ic_baseline_settings_ethernet_24" />
     <Preference
         android:key="mapScreen"
         android:title="@string/preferencesMap"
-        app:fragment="org.owntracks.android.ui.preferences.MapFragment"
+        app:fragment="it.vandillen.tracker.ui.preferences.MapFragment"
         app:icon="@drawable/ic_baseline_map_24" />
     <Preference
         android:key="reportingScreen"
         android:title="@string/preferencesReporting"
-        app:fragment="org.owntracks.android.ui.preferences.ReportingFragment"
+        app:fragment="it.vandillen.tracker.ui.preferences.ReportingFragment"
         app:icon="@drawable/ic_baseline_send_24" />
     <Preference
         android:key="notificationScreen"
         android:title="@string/preferencesNotification"
-        app:fragment="org.owntracks.android.ui.preferences.NotificationFragment"
+        app:fragment="it.vandillen.tracker.ui.preferences.NotificationFragment"
         app:icon="@drawable/ic_baseline_notifications_24" />
     <Preference
         android:key="advancedScreen"
         android:title="@string/preferencesAdvanced"
-        app:fragment="org.owntracks.android.ui.preferences.AdvancedFragment"
+        app:fragment="it.vandillen.tracker.ui.preferences.AdvancedFragment"
         app:icon="@drawable/ic_baseline_settings_suggest_24" />
     <Preference
         android:key="experimentalScreen"
         android:title="@string/preferencesExperimental"
-        app:fragment="org.owntracks.android.ui.preferences.ExperimentalFragment"
+        app:fragment="it.vandillen.tracker.ui.preferences.ExperimentalFragment"
         app:icon="@drawable/science_24" />
     <Preference
         android:key="configuration"

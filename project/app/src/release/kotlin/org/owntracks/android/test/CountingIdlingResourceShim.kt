@@ -1,4 +1,4 @@
-package org.owntracks.android.test
+package it.vandillen.tracker.test
 
 import androidx.test.espresso.IdlingResource
 

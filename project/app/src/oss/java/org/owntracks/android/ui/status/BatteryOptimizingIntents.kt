@@ -1,4 +1,4 @@
-package org.owntracks.android.ui.status
+package it.vandillen.tracker.ui.status
 
 import android.content.Context
 import android.content.Intent

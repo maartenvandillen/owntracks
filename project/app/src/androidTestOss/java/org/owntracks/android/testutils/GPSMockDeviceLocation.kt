@@ -1,4 +1,4 @@
-package org.owntracks.android.testutils
+package it.vandillen.tracker.testutils
 
 import android.content.Context
 import android.location.Location

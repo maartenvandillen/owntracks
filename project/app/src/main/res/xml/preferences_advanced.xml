@@ -19,7 +19,7 @@
     <androidx.preference.PreferenceCategory
         app:iconSpaceReserved="false"
         app:title="@string/preferencesCategoryAdvancedLocator">
-        <org.owntracks.android.support.widgets.EditIntegerPreference
+        <it.vandillen.tracker.support.widgets.EditIntegerPreference
             android:digits="0123456789"
             android:inputType="number"
             app:dialogMessage="@string/preferencesIgnoreInaccurateLocationsDialog"
@@ -27,7 +27,7 @@
             app:key="ignoreInaccurateLocations"
             app:summary="@string/preferencesIgnoreInaccurateLocationsSummary"
             app:title="@string/preferencesIgnoreInaccurateLocations" />
-        <org.owntracks.android.support.widgets.EditIntegerPreference
+        <it.vandillen.tracker.support.widgets.EditIntegerPreference
             android:digits="0123456789"
             android:inputType="number"
             app:dialogMessage="@string/preferencesLocatorDisplacementDialog"
@@ -35,7 +35,7 @@
             app:key="locatorDisplacement"
             app:summary="@string/preferencesLocatorDisplacementSummary"
             app:title="@string/preferencesLocatorDisplacement" />
-        <org.owntracks.android.support.widgets.EditIntegerPreference
+        <it.vandillen.tracker.support.widgets.EditIntegerPreference
             android:digits="0123456789"
             android:inputType="number"
             app:dialogMessage="@string/preferencesLocatorIntervalDialog"
@@ -43,7 +43,7 @@
             app:key="locatorInterval"
             app:summary="@string/preferencesLocatorIntervalSummary"
             app:title="@string/preferencesLocatorInterval" />
-        <org.owntracks.android.support.widgets.EditIntegerPreference
+        <it.vandillen.tracker.support.widgets.EditIntegerPreference
             android:inputType="number"
             app:dialogMessage="@string/preferencesMoveModeLocatorIntervalDialog"
             app:iconSpaceReserved="false"

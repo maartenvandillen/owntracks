@@ -3,7 +3,7 @@
 
     <data>
 
-        <import type="org.owntracks.android.App" />
+        <import type="it.vandillen.tracker.App" />
     </data>
 
     <RelativeLayout

@@ -10,7 +10,7 @@
 
         <variable
             name="waypoint"
-            type="org.owntracks.android.data.waypoints.WaypointModel" />
+            type="it.vandillen.tracker.data.waypoints.WaypointModel" />
     </data>
 
     <LinearLayout

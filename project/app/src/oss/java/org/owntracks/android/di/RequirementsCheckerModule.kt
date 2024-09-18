@@ -1,4 +1,4 @@
-package org.owntracks.android.di
+package it.vandillen.tracker.di
 
 import android.content.Context
 import dagger.Module
@@ -6,8 +6,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import org.owntracks.android.support.OSSRequirementsChecker
-import org.owntracks.android.support.RequirementsChecker
+import it.vandillen.tracker.support.OSSRequirementsChecker
+import it.vandillen.tracker.support.RequirementsChecker
 
 @InstallIn(SingletonComponent::class)
 @Module

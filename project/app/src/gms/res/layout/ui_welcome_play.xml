@@ -6,7 +6,7 @@
 
         <variable
             name="vm"
-            type="org.owntracks.android.ui.welcome.fragments.PlayFragmentViewModel" />
+            type="it.vandillen.tracker.ui.welcome.fragments.PlayFragmentViewModel" />
 
         <import type="android.view.View" />
     </data>

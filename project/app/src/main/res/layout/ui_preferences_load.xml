@@ -6,11 +6,11 @@
 
         <import type="android.view.View" />
 
-        <import type="org.owntracks.android.ui.preferences.load.ImportStatus" />
+        <import type="it.vandillen.tracker.ui.preferences.load.ImportStatus" />
 
         <variable
             name="vm"
-            type="org.owntracks.android.ui.preferences.load.LoadViewModel" />
+            type="it.vandillen.tracker.ui.preferences.load.LoadViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
