@@ -19,7 +19,7 @@ plugins {
   id("com.xcporter.metaview").version("0.0.6")
   // Google services Gradle plugin (for Firebase)
 //  id("com.google.gms.google-services") version "4.4.1" apply false
-//  id("com.google.gms.google-services").version("4.4.1").apply(false)
+  id("com.google.gms.google-services").version("4.4.2").apply(false)
 }
 
 generateUml { classTree { target = file("app/src/main") } }

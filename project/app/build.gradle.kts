@@ -10,7 +10,7 @@ plugins {
   alias(libs.plugins.ktfmt)
   alias(libs.plugins.ksp)
   // Google services Gradle plugin (for Firebase)
-//  id("com.google.gms.google-services")
+  id("com.google.gms.google-services")
 }
 
 apply<EspressoMetadataEmbeddingPlugin>()
