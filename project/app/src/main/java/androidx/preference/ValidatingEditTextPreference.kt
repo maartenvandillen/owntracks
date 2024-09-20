@@ -14,7 +14,6 @@ import android.util.TypedValue.TYPE_REFERENCE
 import android.util.TypedValue.TYPE_STRING
 import androidx.annotation.StringRes
 import androidx.core.util.forEach
-import it.vandillen.tracker.R
 
 open class ValidatingEditTextPreference : EditTextPreference {
   private var onBindEditTextListener: OnBindEditTextListener? = null
@@ -68,7 +67,7 @@ open class ValidatingEditTextPreference : EditTextPreference {
                     data = getAttributeIntValue(it, -1)
                     type = TYPE_INT_DEC
                   })
-          R.attr.validationError -> {
+          `it.vandillen`.tracker.R.attr.validationError -> {
             attributes.put(
                 name,
                 TypedValue().apply {
@@ -144,7 +143,7 @@ open class ValidatingEditTextPreference : EditTextPreference {
   constructor(
       context: Context,
       attrs: AttributeSet?
-  ) : this(context, attrs, android.R.attr.editTextPreferenceStyle)
+  ) : this(context, attrs, R.attr.editTextPreferenceStyle)
 
   @Suppress("unused") constructor(context: Context) : this(context, null)
 }
