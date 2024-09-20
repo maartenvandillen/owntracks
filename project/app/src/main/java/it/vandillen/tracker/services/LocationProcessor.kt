@@ -120,6 +120,7 @@ constructor(
               this.trigger = trigger
               trackerId = preferences.tid.toString()
               inregions = calculateInRegions(loadedWaypoints)
+              ssid = preferences.deviceId                       //ugly hack: reusing ssid field here to pass device id into message
             }
     Timber.v("Actually publishing location $location triggered by $trigger as message=$message")
     messageProcessor.queueMessageForSending(message)

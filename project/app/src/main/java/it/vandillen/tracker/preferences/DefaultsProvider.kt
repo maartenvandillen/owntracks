@@ -40,7 +40,7 @@ interface DefaultsProvider {
       Preferences::locatorDisplacement -> 500
       Preferences::locatorInterval -> 60
       Preferences::locatorPriority -> null
-      Preferences::mode -> ConnectionMode.MQTT
+      Preferences::mode -> ConnectionMode.FIRESTORE
       Preferences::monitoring -> MonitoringMode.SIGNIFICANT
       Preferences::moveModeLocatorInterval -> 10
       Preferences::mqttProtocolLevel -> MqttProtocolLevel.MQTT_3_1

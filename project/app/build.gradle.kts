@@ -100,7 +100,7 @@ android {
           ),
       )
       resValue("string", "GOOGLE_MAPS_API_KEY", googleMapsAPIKey)
-      applicationIdSuffix = ".debug"
+//      applicationIdSuffix = ".debug"
       enableUnitTestCoverage = true
       enableAndroidTestCoverage = true
     }
@@ -219,7 +219,7 @@ android {
   }
   playConfigs {
     register("gms") {
-      enabled.set(true)
+      enabled.set(false)
       track.set("internal")
       if (manuallySetVersion) {
         resolutionStrategy.set(com.github.triplet.gradle.androidpublisher.ResolutionStrategy.IGNORE)
@@ -269,6 +269,7 @@ dependencies {
   implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
   implementation("com.google.firebase:firebase-analytics")
   implementation("com.google.firebase:firebase-firestore")
+  implementation(libs.firebase.messaging.ktx)
 
   // Utility libraries
   implementation(libs.bundles.hilt)
