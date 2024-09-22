@@ -70,10 +70,10 @@ class OngoingNotification(private val context: Context, private val initialMode:
               R.drawable.ic_baseline_publish_24,
               context.getString(R.string.publish),
               publishPendingIntent)
-          .addAction(
-              R.drawable.ic_owntracks_80,
-              context.getString(R.string.notificationChangeMonitoring),
-              changeMonitoringPendingIntent)
+//          .addAction(
+//              R.drawable.ic_owntracks_80,
+//              context.getString(R.string.notificationChangeMonitoring),
+//              changeMonitoringPendingIntent)
           .setSmallIcon(R.drawable.ic_owntracks_80)
           .setSound(null, AudioManager.STREAM_NOTIFICATION)
           .setColor(context.getColor(R.color.OTPrimaryBlue))
