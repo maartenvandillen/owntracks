@@ -41,8 +41,8 @@ interface DefaultsProvider {
       Preferences::locatorInterval -> 60
       Preferences::locatorPriority -> null
       Preferences::mode -> ConnectionMode.FIRESTORE
-      Preferences::monitoring -> MonitoringMode.SIGNIFICANT
-      Preferences::moveModeLocatorInterval -> 10
+      Preferences::monitoring -> MonitoringMode.MOVE                  //default MOVE mode
+      Preferences::moveModeLocatorInterval -> 60                      //with 60 sec interval
       Preferences::mqttProtocolLevel -> MqttProtocolLevel.MQTT_3_1
       Preferences::notificationEvents -> true
       Preferences::notificationGeocoderErrors -> true
