@@ -51,7 +51,7 @@ interface DefaultsProvider {
       Preferences::opencageApiKey -> ""
       Preferences::osmTileScaleFactor -> 1.0f
       Preferences::password -> ""
-      Preferences::pegLocatorFastestIntervalToInterval -> false
+      Preferences::pegLocatorFastestIntervalToInterval -> true        //force above 60 sec interval
       Preferences::ping -> 15
       Preferences::port -> 8883
       Preferences::extendedData -> true
