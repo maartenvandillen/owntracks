@@ -290,6 +290,14 @@ class BackgroundService : LifecycleService(), Preferences.OnPreferenceChangeList
           if (intent.hasExtra("monitoring")) {
             val newMode = getByValue(intent.getIntExtra("monitoring", preferences.monitoring.value))
             preferences.monitoring = newMode
+          } else if (intent.hasExtra("locationInterval")) {
+            preferences.monitoring = MonitoringMode.MOVE
+            val newLocationInterval = intent.getStringExtra("locationInterval")
+            if (newLocationInterval == "high") {
+              preferences.moveModeLocatorInterval = 5
+            } else {
+              preferences.moveModeLocatorInterval = 60
+            }
           } else {
             // Step monitoring mode if no mode is specified
             preferences.setMonitoringNext()

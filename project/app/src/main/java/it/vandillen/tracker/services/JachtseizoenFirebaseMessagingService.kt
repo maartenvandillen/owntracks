@@ -38,12 +38,29 @@ class JachtseizoenFirebaseMessagingService : FirebaseMessagingService() {
       message.priority = priority
 
       when (messageType) {
-        MessageType.LOCATION_REQUEST -> {
+        MessageType.TRACKER_LOCATION_REQUEST -> {
           PendingIntent.getService(
               applicationContext,
               0,
               Intent().setAction(BackgroundService.INTENT_ACTION_SEND_LOCATION_USER),
               BackgroundService.UPDATE_CURRENT_INTENT_FLAGS).send()
+        }
+        MessageType.TRACKER_LOCATION_INTERVAL -> {
+          val data = remoteMessage.data
+          var locationInterval = "low"
+          if (data.isNotEmpty()) {
+            if (data["trackerLocationInterval"] != null) {
+              locationInterval = data["trackerLocationInterval"]!!
+            }
+
+            PendingIntent.getService(
+                applicationContext,
+                0,
+                Intent()
+                    .setAction(BackgroundService.INTENT_ACTION_CHANGE_MONITORING)
+                    .putExtra("locationInterval", locationInterval),
+                BackgroundService.UPDATE_CURRENT_INTENT_FLAGS).send()
+          }
         }
         else -> { }
       }

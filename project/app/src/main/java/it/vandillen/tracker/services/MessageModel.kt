@@ -23,7 +23,8 @@ enum class MessageType(val value: String) {
     PAUSE("pause"),
     UPDATE("update"),
     FREEZE("freeze"),
-    LOCATION_REQUEST("locationRequest"),
+    TRACKER_LOCATION_REQUEST("trackerLocationRequest"),
+    TRACKER_LOCATION_INTERVAL("trackerLocationInterval"),
     UNKNOWN("unknown");
 
     companion object {
