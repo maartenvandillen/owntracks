@@ -18,6 +18,8 @@ import it.vandillen.tracker.net.ConnectionConfiguration
 import it.vandillen.tracker.preferences.Preferences
 import it.vandillen.tracker.preferences.types.ConnectionMode
 import it.vandillen.tracker.services.MessageProcessor
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.security.KeyStore
 import java.util.Calendar
@@ -45,6 +47,18 @@ class FirestoreMessageProcessorEndpoint(
     FirebaseMessaging.getInstance().token.addOnCompleteListener(
       OnCompleteListener { task ->
         if (!task.isSuccessful) {
+          scope.launch {
+            delay(2000)
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(
+                OnCompleteListener OnCompleteListener2@{ task2 ->
+                  if (!task.isSuccessful) {
+                    return@OnCompleteListener2
+                  }
+                  _fcmToken = task2.result
+                }
+            )
+          }
+
           return@OnCompleteListener
         }
 
