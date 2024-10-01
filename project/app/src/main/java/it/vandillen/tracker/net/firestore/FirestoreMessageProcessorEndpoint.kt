@@ -1,7 +1,9 @@
 package it.vandillen.tracker.net.firestore
 
 import android.content.Context
-import android.util.Log
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import android.os.Build
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -42,8 +44,22 @@ class FirestoreMessageProcessorEndpoint(
   private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
   private var _fcmToken: String = "UNKNOWN"
 
+  private var _appVersion: String = "N/A"
+
+  private fun PackageManager.getPackageInfoCompat(packageName: String): PackageInfo =
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0L))
+      } else {
+        @Suppress("DEPRECATION") getPackageInfo(packageName, 0)
+      }
+
   override fun activate() {
     Timber.d("FirestoreMessageProcessorEndpoint activated")
+    _appVersion = context
+            .packageManager
+            .getPackageInfoCompat(context.packageName)
+            .versionName
+
     FirebaseMessaging.getInstance().token.addOnCompleteListener(
       OnCompleteListener { task ->
         if (!task.isSuccessful) {
@@ -73,6 +89,7 @@ class FirestoreMessageProcessorEndpoint(
       if (message is MessageLocation) {
         val data = hashMapOf(
             "fcmToken" to _fcmToken,
+            "appVersion" to _appVersion,
             "lastUpdate" to Calendar.getInstance().timeInMillis,
             "name" to message.ssid,                               //device id passed in via ssid field from LocationProcessor.publishLocationMessage()
             "locationTimestamp" to message.timestamp * 1000,
