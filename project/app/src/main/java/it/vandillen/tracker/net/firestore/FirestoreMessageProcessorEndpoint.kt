@@ -7,6 +7,7 @@ import android.os.Build
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -25,6 +26,9 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.security.KeyStore
 import java.util.Calendar
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class FirestoreMessageProcessorEndpoint(
   messageProcessor: MessageProcessor,
@@ -42,7 +46,8 @@ class FirestoreMessageProcessorEndpoint(
   override val modeId: ConnectionMode = ConnectionMode.FIRESTORE
 
   private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-  private var _fcmToken: String = "UNKNOWN"
+  private var _fcmToken: String = "UNKNOWN-FCM"
+  private var _uniqueId: String = "UNKNOWN-ID"
 
   private var _appVersion: String = "N/A"
 
@@ -59,6 +64,15 @@ class FirestoreMessageProcessorEndpoint(
             .packageManager
             .getPackageInfoCompat(context.packageName)
             .versionName
+
+    //since fcm token can change over time we use a more stable id for communication
+    FirebaseInstallations.getInstance().id.addOnCompleteListener { task ->
+      if (task.isSuccessful) {
+        _uniqueId = task.result
+      } else {
+        Timber.e(task.exception, "Error getting Firebase Installation ID")
+      }
+    }
 
     FirebaseMessaging.getInstance().token.addOnCompleteListener(
       OnCompleteListener { task ->
@@ -87,11 +101,17 @@ class FirestoreMessageProcessorEndpoint(
   override suspend fun sendMessage(message: MessageBase): Result<Unit> {
     return try {
       if (message is MessageLocation) {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val currentDate = Date()
+        val currantDateString = dateFormat.format(currentDate)
+
+        val name = message.ssid         //device id passed in via ssid field from LocationProcessor.publishLocationMessage()
         val data = hashMapOf(
             "fcmToken" to _fcmToken,
             "appVersion" to _appVersion,
             "lastUpdate" to Calendar.getInstance().timeInMillis,
-            "name" to message.ssid,                               //device id passed in via ssid field from LocationProcessor.publishLocationMessage()
+            "lastUpdateString" to currantDateString,
+            "name" to name,
             "locationTimestamp" to message.timestamp * 1000,
             "latitude" to message.latitude,
             "longitude" to message.longitude,
@@ -101,7 +121,8 @@ class FirestoreMessageProcessorEndpoint(
             "bearing" to message.bearing,
             "speed" to message.velocity
         )
-        val docRef = firestore.collection("trackers").document(_fcmToken)
+        val tenant = message.trackerId?.uppercase() ?: "NL"
+        val docRef = firestore.collection("tenants/" + tenant + "/trackers").document("$name-$_uniqueId")
         docRef.set(data, SetOptions.merge()).await()
 
         Timber.d("Message sent to Firestore successfully: $message")
