@@ -101,31 +101,36 @@ class FirestoreMessageProcessorEndpoint(
   override suspend fun sendMessage(message: MessageBase): Result<Unit> {
     return try {
       if (message is MessageLocation) {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        val currentDate = Date()
-        val currantDateString = dateFormat.format(currentDate)
+        if (_uniqueId != "UNKNOWN-ID") {
+          val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+          val currentDate = Date()
+          val currantDateString = dateFormat.format(currentDate)
 
-        val name = message.ssid         //device id passed in via ssid field from LocationProcessor.publishLocationMessage()
-        val data = hashMapOf(
-            "fcmToken" to _fcmToken,
-            "appVersion" to _appVersion,
-            "lastUpdate" to Calendar.getInstance().timeInMillis,
-            "lastUpdateString" to currantDateString,
-            "name" to name,
-            "locationTimestamp" to message.timestamp * 1000,
-            "latitude" to message.latitude,
-            "longitude" to message.longitude,
-            "battery" to message.battery,
-            "accuracy" to message.accuracy,
-            "altitude" to message.altitude,
-            "bearing" to message.bearing,
-            "speed" to message.velocity
-        )
-        val tenant = message.trackerId?.uppercase() ?: "NL"
-        val docRef = firestore.collection("tenants/" + tenant + "/trackers").document("$name-$_uniqueId")
-        docRef.set(data, SetOptions.merge()).await()
+          val name = message.ssid         //device id passed in via ssid field from LocationProcessor.publishLocationMessage()
+          val data = hashMapOf(
+              "fcmToken" to _fcmToken,
+              "appVersion" to _appVersion,
+              "lastUpdate" to Calendar.getInstance().timeInMillis,
+              "lastUpdateString" to currantDateString,
+              "name" to name,
+              "locationTimestamp" to message.timestamp * 1000,
+              "latitude" to message.latitude,
+              "longitude" to message.longitude,
+              "battery" to message.battery,
+              "accuracy" to message.accuracy,
+              "altitude" to message.altitude,
+              "bearing" to message.bearing,
+              "speed" to message.velocity
+          )
 
-        Timber.d("Message sent to Firestore successfully: $message")
+          val tenant = message.trackerId?.uppercase() ?: "NEW"
+          val docRef = firestore.collection("tenants/" + tenant + "/trackers").document("$name-$_uniqueId")
+          docRef.set(data, SetOptions.merge()).await()
+
+          Timber.d("Message sent to Firestore successfully: $message")
+        } else {
+          Timber.d("Message NOT sent to Firestore (no unique device id)")
+        }
         Result.success(Unit)
       } else {
         Timber.d("Message was not a MessageLocation instance: $message")
