@@ -124,10 +124,14 @@ class FirestoreMessageProcessorEndpoint(
           )
 
           val tenant = message.trackerId?.uppercase() ?: "NEW"
-          val docRef = firestore.collection("tenants/" + tenant + "/trackers").document("$name-$_uniqueId")
-          docRef.set(data, SetOptions.merge()).await()
+          if (tenant != "") {
+            val docRef = firestore.collection("tenants/" + tenant + "/trackers").document("$name-$_uniqueId")
+            docRef.set(data, SetOptions.merge()).await()
 
-          Timber.d("Message sent to Firestore successfully: $message")
+            Timber.d("Message sent to Firestore successfully: $message")
+          } else {
+            Timber.d("Message NOT sent to Firestore (no tenant)")
+          }
         } else {
           Timber.d("Message NOT sent to Firestore (no unique device id)")
         }
