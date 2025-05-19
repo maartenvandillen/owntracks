@@ -13,7 +13,7 @@
     <string name="accept">"Accept"</string>
     <string name="addWaypoint">"Add waypoint"</string>
     <string name="aLocation">"a region"</string>
-    <string name="app_name">"OwnTracks"</string>
+    <string name="app_name">"Jachtseizoen GPS"</string>
     <string name="backgroundLocationPermissionRequestDialogText">"If you'd like OwnTracks to collect location data even when it's running in the background, an additional permission is needed to allow OwnTracks to receive locations \"all the time\"."</string>
     <string name="backgroundLocationPermissionRequestDialogTitle">"Background Location Permission"</string>
     <string name="backgroundLocationRestrictionNotificationText">"This version of Android restricts OwnTracks from receiving locations when started in the background until the app is opened. Click this notification to open the app and start tracking location."</string>
@@ -247,7 +247,7 @@ To allow this, please enable Location in the device settings."</string>
     <string name="preferencesShowWaypointsOnMap">"Show Waypoints"</string>
     <string name="preferencesShowWaypointsOnMapSummary">"Draw waypoint circles on the map"</string>
     <string name="preferencesTheme">"Theme"</string>
-    <string name="preferencesTrackerId">"Tracker ID"</string>
+    <string name="preferencesTrackerId">"Tenant"</string>
     <string name="preferencesTrackerIdValidationError">"Must be one or two characters"</string>
     <string name="preferencesMastodon" translatable="false">"Mastodon"</string>
     <string name="preferencesUrl" translatable="false">"URL"</string>
