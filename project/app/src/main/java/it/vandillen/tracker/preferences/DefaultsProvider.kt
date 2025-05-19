@@ -69,8 +69,8 @@ interface DefaultsProvider {
       Preferences::theme -> AppTheme.AUTO
       Preferences::tls -> true
       Preferences::tlsClientCrt -> ""
-      Preferences::tid ->
-          StringMaxTwoAlphaNumericChars(preferences.deviceId.takeLast(2).ifEmpty { "na" })
+//      Preferences::tid -> StringMaxTwoAlphaNumericChars(preferences.deviceId.takeLast(2).ifEmpty { "na" })
+      Preferences::tid -> ""
       Preferences::url -> ""
       Preferences::userDeclinedEnableLocationPermissions -> false
       Preferences::userDeclinedEnableBackgroundLocationPermissions -> false
