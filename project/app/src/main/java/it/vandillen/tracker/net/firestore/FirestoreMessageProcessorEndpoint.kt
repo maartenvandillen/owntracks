@@ -63,7 +63,7 @@ class FirestoreMessageProcessorEndpoint(
     _appVersion = context
             .packageManager
             .getPackageInfoCompat(context.packageName)
-            .versionName
+            .versionName ?: "N/A"
 
     //since fcm token can change over time we use a more stable id for communication
     FirebaseInstallations.getInstance().id.addOnCompleteListener { task ->
