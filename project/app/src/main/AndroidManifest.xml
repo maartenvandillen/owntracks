@@ -48,6 +48,7 @@
 
     <!-- API v28 requires this for foreground services -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
 
     <!-- API v34 requires this for foreground services -->
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
@@ -216,6 +217,7 @@
 
         <service
             android:name="it.vandillen.tracker.services.JachtseizoenFirebaseMessagingService"
+            android:foregroundServiceType="location"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
