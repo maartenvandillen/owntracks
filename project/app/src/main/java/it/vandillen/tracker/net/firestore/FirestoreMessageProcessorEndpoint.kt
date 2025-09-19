@@ -11,6 +11,7 @@ import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import it.vandillen.tracker.model.messages.MessageBase
 import it.vandillen.tracker.model.Parser
@@ -22,7 +23,6 @@ import it.vandillen.tracker.preferences.Preferences
 import it.vandillen.tracker.preferences.types.ConnectionMode
 import it.vandillen.tracker.services.MessageProcessor
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.security.KeyStore
 import java.util.Calendar
@@ -77,23 +77,26 @@ class FirestoreMessageProcessorEndpoint(
     FirebaseMessaging.getInstance().token.addOnCompleteListener(
       OnCompleteListener { task ->
         if (!task.isSuccessful) {
+          // give it another go shortly
           scope.launch {
             delay(2000)
             FirebaseMessaging.getInstance().token.addOnCompleteListener(
                 OnCompleteListener OnCompleteListener2@{ task2 ->
-                  if (!task.isSuccessful) {
+                  if (!task2.isSuccessful) {
                     return@OnCompleteListener2
                   }
                   _fcmToken = task2.result
+                  // publish token to repo for UI
+                  scope.launch { endpointStateRepo.firestoreFcmToken.emit(_fcmToken) }
                 }
             )
           }
-
-          return@OnCompleteListener
         }
 
         // Get new FCM registration token
         _fcmToken = task.result
+        // publish token to repo for UI
+        scope.launch { endpointStateRepo.firestoreFcmToken.emit(_fcmToken) }
       }
     )
   }
@@ -128,6 +131,8 @@ class FirestoreMessageProcessorEndpoint(
             val docRef = firestore.collection("tenants/" + tenant + "/trackers").document("$name-$_uniqueId")
             docRef.set(data, SetOptions.merge()).await()
 
+            // expose last message sent timestamp for UI overlay
+            scope.launch { endpointStateRepo.firestoreLastSentMillis.emit(System.currentTimeMillis()) }
             Timber.d("Message sent to Firestore successfully: $message")
           } else {
             Timber.d("Message NOT sent to Firestore (no tenant)")
@@ -154,9 +159,4 @@ class FirestoreMessageProcessorEndpoint(
   override fun getEndpointConfiguration(): ConnectionConfiguration {
     TODO("Not yet implemented")
   }
-
-//  override fun getEndpointConfiguration(): ConnectionConfiguration {
-//    // You can implement any logic to fetch and return the endpoint configuration
-//    Timber.d("Fetching Firestore endpoint configuration")
-//  }
 }

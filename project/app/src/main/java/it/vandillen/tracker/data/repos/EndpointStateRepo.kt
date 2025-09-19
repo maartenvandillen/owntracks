@@ -16,6 +16,10 @@ class EndpointStateRepo @Inject constructor() {
 
   val serviceStartedDate: MutableStateFlow<Instant> = MutableStateFlow(Instant.now())
 
+  // Firestore-specific runtime info exposed for UI
+  val firestoreFcmToken: MutableStateFlow<String> = MutableStateFlow("UNKNOWN-FCM")
+  val firestoreLastSentMillis: MutableStateFlow<Long?> = MutableStateFlow(null)
+
   suspend fun setState(newEndpointState: EndpointState) {
     Timber.v(
         "Setting endpoint state $newEndpointState called from: ${

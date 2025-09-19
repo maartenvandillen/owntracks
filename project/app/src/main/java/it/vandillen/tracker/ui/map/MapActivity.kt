@@ -47,6 +47,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import javax.inject.Named
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import it.vandillen.tracker.R
 import it.vandillen.tracker.databinding.UiMapBinding
@@ -57,6 +58,7 @@ import it.vandillen.tracker.preferences.types.MonitoringMode
 import it.vandillen.tracker.services.BackgroundService
 import it.vandillen.tracker.services.BackgroundService.Companion.BACKGROUND_LOCATION_RESTRICTION_NOTIFICATION_TAG
 import it.vandillen.tracker.support.ContactImageBindingAdapter
+import it.vandillen.tracker.support.DeviceMetricsProvider
 import it.vandillen.tracker.support.DrawerProvider
 import it.vandillen.tracker.support.RequirementsChecker
 import it.vandillen.tracker.test.CountingIdlingResourceShim
@@ -68,6 +70,7 @@ import it.vandillen.tracker.ui.mixins.NotificationPermissionRequester
 import it.vandillen.tracker.ui.mixins.ServiceStarter
 import it.vandillen.tracker.ui.mixins.WorkManagerInitExceptionNotifier
 import it.vandillen.tracker.ui.welcome.WelcomeActivity
+import it.vandillen.tracker.data.repos.EndpointStateRepo
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -76,7 +79,10 @@ class MapActivity :
     View.OnClickListener,
     View.OnLongClickListener,
     WorkManagerInitExceptionNotifier by WorkManagerInitExceptionNotifier.Impl(),
-    ServiceStarter by ServiceStarter.Impl() {
+    ServiceStarter by ServiceStarter.Impl(), Preferences.OnPreferenceChangeListener {
+
+  private val connectivityManager by lazy { getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager }
+  private var networkCallback: android.net.ConnectivityManager.NetworkCallback? = null
   private val viewModel: MapViewModel by viewModels()
   private val notificationPermissionRequester =
       NotificationPermissionRequester(
@@ -119,6 +125,10 @@ class MapActivity :
   @Inject lateinit var preferences: Preferences
 
   @Inject lateinit var drawerProvider: it.vandillen.tracker.support.DrawerProvider
+
+  @Inject lateinit var deviceMetricsProvider: DeviceMetricsProvider
+
+  @Inject lateinit var endpointStateRepo: EndpointStateRepo
 
   private val serviceConnection =
       object : ServiceConnection {
@@ -261,12 +271,56 @@ class MapActivity :
     viewModel.currentLocation.observe(this) { location ->
       if (location == null) {
         disableLocationMenus()
+        binding.statusGps.text = "GPS: NO FIX"
       } else {
         enableLocationMenus()
         binding.vm?.run { updateActiveContactDistanceAndBearing(location) }
+        val acc = try { String.format("%.1f", location.accuracy) } catch (e: Exception) { "-" }
+        binding.statusGps.text = "GPS: FIX (${acc} m)"
       }
     }
     viewModel.currentMonitoringMode.observe(this) { updateMonitoringModeMenu() }
+
+    // Wire up status overlay values
+    lifecycleScope.launch {
+      // initial connection status
+      launch {
+        val conn = deviceMetricsProvider.connectionType
+        val isOnline = !conn.equals("offline", ignoreCase = true)
+        updateConnectionStatus(isOnline)
+      }
+      // device id and tenant
+      binding.statusDeviceId.text = "Device: ${preferences.deviceId}"
+      binding.statusTenant.text = "Tenant: ${preferences.tid?.toString()?.uppercase() ?: ""}"
+      // FCM token updates
+      launch {
+        endpointStateRepo.firestoreFcmToken.collectLatest { token ->
+          val valid = !token.contains("UNKNOWN", ignoreCase = true) && token.isNotBlank()
+          binding.statusFcm.text = "FCM: ${token.take(24)}"
+          binding.statusFcmIcon.setImageResource(
+            if (valid) R.drawable.ic_baseline_done_24 else R.drawable.baseline_clear_24
+          )
+          val fcmTint = if (valid)
+            resources.getColor(R.color.log_info_tag_color, theme)
+          else
+            resources.getColor(R.color.log_error_tag_color, theme)
+          ImageViewCompat.setImageTintList(binding.statusFcmIcon, ColorStateList.valueOf(fcmTint))
+        }
+      }
+      // last sent timestamp updates
+      launch {
+        endpointStateRepo.firestoreLastSentMillis.collectLatest { ts ->
+          val text = if (ts == null) "Last sent: -" else {
+            val fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault())
+            "Last sent: ${fmt.format(Instant.ofEpochMilli(ts))}"
+          }
+          binding.statusLastSent.text = text
+        }
+      }
+
+      // Initial interval display
+      binding.statusInterval.text = "Interval: ${preferences.moveModeLocatorInterval} s"
+    }
 
     startService(this)
 
@@ -297,6 +351,27 @@ class MapActivity :
             // Noop
           }
         }
+      }
+    }
+  }
+
+  private fun updateConnectionStatus(isOnline: Boolean) {
+    val state = if (isOnline) "ONLINE" else "OFFLINE"
+    binding.statusConnection.text = "Conn: $state"
+    binding.statusConnectionIcon.setImageResource(
+      if (isOnline) R.drawable.ic_baseline_done_24 else R.drawable.baseline_clear_24
+    )
+    val tint = if (isOnline)
+      resources.getColor(R.color.log_info_tag_color, theme)
+    else
+      resources.getColor(R.color.log_error_tag_color, theme)
+    ImageViewCompat.setImageTintList(binding.statusConnectionIcon, ColorStateList.valueOf(tint))
+  }
+
+  override fun onPreferenceChanged(properties: Set<String>) {
+    if (properties.contains(Preferences::moveModeLocatorInterval.name)) {
+      runOnUiThread {
+        binding.statusInterval.text = "Interval: ${preferences.moveModeLocatorInterval} s"
       }
     }
   }
@@ -694,12 +769,43 @@ class MapActivity :
 
   override fun onStart() {
     super.onStart()
+
+    // Register network callback to receive connectivity changes
+    if (networkCallback == null) {
+      networkCallback = object : android.net.ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: android.net.Network) {
+          runOnUiThread { updateConnectionStatus(true) }
+        }
+        override fun onLost(network: android.net.Network) {
+          runOnUiThread { updateConnectionStatus(false) }
+        }
+        override fun onCapabilitiesChanged(network: android.net.Network, caps: android.net.NetworkCapabilities) {
+          val hasInternet = caps.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET)
+          runOnUiThread { updateConnectionStatus(hasInternet) }
+        }
+      }
+      connectivityManager.registerDefaultNetworkCallback(networkCallback!!)
+    }
+
+    // Listen for preference changes to update interval live
+    preferences.registerOnPreferenceChangedListener(this)
+
     bindService(
         Intent(this, BackgroundService::class.java), serviceConnection, Context.BIND_AUTO_CREATE)
   }
 
   override fun onStop() {
     super.onStop()
+
+    // Unregister callback to avoid leaks
+    networkCallback?.let {
+      try { connectivityManager.unregisterNetworkCallback(it) } catch (_: Exception) {}
+    }
+    networkCallback = null
+
+    // Stop listening for preference changes
+    preferences.unregisterOnPreferenceChangedListener(this)
+    
     unbindService(serviceConnection)
   }
 
