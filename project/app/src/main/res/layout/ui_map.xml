@@ -91,18 +91,35 @@
 
             <!-- FCM with icon -->
             <LinearLayout
+                android:id="@+id/statusFcmRow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true">
 
-                <ImageView
-                    android:id="@+id/statusFcmIcon"
+                <!-- Overlay spinner in the same spot as the icon -->
+                <FrameLayout
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_marginEnd="6dp"
-                    android:contentDescription="@string/na"
-                    tools:src="@drawable/ic_baseline_done_24" />
+                    android:layout_marginEnd="6dp">
+
+                    <ImageView
+                        android:id="@+id/statusFcmIcon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/na"
+                        tools:src="@drawable/ic_baseline_done_24" />
+
+                    <ProgressBar
+                        android:id="@+id/statusFcmProgress"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center"
+                        android:visibility="gone" />
+                </FrameLayout>
 
                 <TextView
                     android:id="@+id/statusFcm"

@@ -23,20 +23,25 @@ class FcmTokenManager(
 
   fun getCachedToken(): String? = storedToken
 
-  fun refreshToken() {
-    FirebaseMessaging.getInstance().token
-        .addOnCompleteListener { task ->
-          if (task.isSuccessful) {
-            val newToken = task.result
-            if (!newToken.isNullOrEmpty() && newToken != storedToken) {
-              storedToken = newToken
-              scope.launch { endpointStateRepo.firestoreFcmToken.emit(newToken) }
-              Timber.d("FCM token refreshed: $newToken")
-            }
-          } else {
-            Timber.w(task.exception, "Failed to refresh FCM token")
+  fun refreshToken(): com.google.android.gms.tasks.Task<String> {
+    val task = FirebaseMessaging.getInstance().token
+    task.addOnCompleteListener { task ->
+      if (task.isSuccessful) {
+        val newToken = task.result
+        if (!newToken.isNullOrEmpty()) {
+          if (newToken != storedToken) {
+            storedToken = newToken
           }
+          scope.launch { endpointStateRepo.firestoreFcmToken.emit(newToken) }
+          Timber.d("FCM token refreshed: $newToken")
+        } else {
+          Timber.w("Empty FCM token received")
         }
+      } else {
+        Timber.w(task.exception, "Failed to refresh FCM token")
+      }
+    }
+    return task
   }
 
   fun updateTokenFromService(token: String) {

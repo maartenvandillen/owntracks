@@ -71,6 +71,7 @@ import it.vandillen.tracker.ui.mixins.ServiceStarter
 import it.vandillen.tracker.ui.mixins.WorkManagerInitExceptionNotifier
 import it.vandillen.tracker.ui.welcome.WelcomeActivity
 import it.vandillen.tracker.data.repos.EndpointStateRepo
+import it.vandillen.tracker.net.firestore.FcmTokenManager
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -98,6 +99,9 @@ class MapActivity :
   private var sensorManager: SensorManager? = null
   private var orientationSensor: Sensor? = null
   private lateinit var binding: UiMapBinding
+
+  // FCM refresh state
+  private var isRefreshingFcm: Boolean = false
 
   // Cache last sent timestamp for periodic/icon refresh
   private var lastSentMillisCache: Long? = null
@@ -171,6 +175,25 @@ class MapActivity :
           bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout)
           contactPeek.contactRow.setOnClickListener(this@MapActivity)
           contactPeek.contactRow.setOnLongClickListener(this@MapActivity)
+
+          // Make FCM row clickable to trigger refresh (only when invalid)
+          statusFcmRow.setOnClickListener {
+            if (!isRefreshingFcm && statusFcmRow.isEnabled) {
+              isRefreshingFcm = true
+              statusFcmProgress.visibility = View.VISIBLE
+              statusFcmIcon.visibility = View.INVISIBLE
+              // Trigger refresh via FcmTokenManager which will emit to EndpointStateRepo
+              FcmTokenManager(applicationContext, lifecycleScope, endpointStateRepo)
+                .refreshToken()
+                .addOnCompleteListener { t ->
+                  // Hide spinner regardless; success path will also be hidden on collector
+                  statusFcmProgress.visibility = View.GONE
+                  statusFcmIcon.visibility = View.VISIBLE
+                  isRefreshingFcm = false
+                }
+            }
+          }
+
           contactClearButton.setOnClickListener { viewModel.onClearContactClicked() }
           contactShareButton.setOnClickListener {
             startActivity(
@@ -332,6 +355,13 @@ class MapActivity :
           else
             resources.getColor(R.color.log_error_tag_color, theme)
           ImageViewCompat.setImageTintList(binding.statusFcmIcon, ColorStateList.valueOf(fcmTint))
+          // Enable click only when token invalid
+          binding.statusFcmRow.isEnabled = !valid
+          binding.statusFcmRow.alpha = if (!valid) 1.0f else 0.6f
+          // Hide progress and reset state when we receive an update
+          binding.statusFcmProgress.visibility = View.GONE
+          binding.statusFcmIcon.visibility = View.VISIBLE
+          isRefreshingFcm = false
         }
       }
 
