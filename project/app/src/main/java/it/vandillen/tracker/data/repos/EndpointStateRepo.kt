@@ -18,6 +18,7 @@ class EndpointStateRepo @Inject constructor() {
 
   // Firestore-specific runtime info exposed for UI
   val firestoreFcmToken: MutableStateFlow<String> = MutableStateFlow("UNKNOWN-FCM")
+  val firestoreUniqueId: MutableStateFlow<String> = MutableStateFlow("UNKNOWN-ID")
   val firestoreLastSentMillis: MutableStateFlow<Long?> = MutableStateFlow(null)
 
   suspend fun setState(newEndpointState: EndpointState) {

@@ -299,6 +299,22 @@ class MapActivity :
       // tenant
       updateTenant()
 
+      // Unique ID updates
+      launch {
+        endpointStateRepo.firestoreUniqueId.collectLatest { uid ->
+          val valid = uid.isNotBlank() && !uid.contains("UNKNOWN", ignoreCase = true)
+          binding.statusUniqueId.text = if (uid.isBlank()) "ID: -" else "ID: ${uid.take(24)}"
+          binding.uniqueIdIcon.setImageResource(
+            if (valid) R.drawable.ic_baseline_done_24 else R.drawable.baseline_clear_24
+          )
+          val tint = if (valid)
+            resources.getColor(R.color.log_info_tag_color, theme)
+          else
+            resources.getColor(R.color.log_error_tag_color, theme)
+          ImageViewCompat.setImageTintList(binding.uniqueIdIcon, ColorStateList.valueOf(tint))
+        }
+      }
+
       // FCM token updates
       launch {
         endpointStateRepo.firestoreFcmToken.collectLatest { token ->
@@ -314,6 +330,7 @@ class MapActivity :
           ImageViewCompat.setImageTintList(binding.statusFcmIcon, ColorStateList.valueOf(fcmTint))
         }
       }
+
       // last sent timestamp updates
       launch {
         endpointStateRepo.firestoreLastSentMillis.collectLatest { ts ->

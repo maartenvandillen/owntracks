@@ -72,6 +72,7 @@ class FirestoreMessageProcessorEndpoint(
     FirebaseInstallations.getInstance().id.addOnCompleteListener { task ->
       if (task.isSuccessful) {
         _uniqueId = task.result
+        scope.launch { endpointStateRepo.firestoreUniqueId.emit(_uniqueId) }
       } else {
         Timber.e(task.exception, "Error getting Firebase Installation ID")
       }
