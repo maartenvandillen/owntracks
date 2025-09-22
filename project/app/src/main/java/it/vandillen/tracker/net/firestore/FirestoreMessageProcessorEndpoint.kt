@@ -13,6 +13,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collectLatest
+import android.content.SharedPreferences
 import it.vandillen.tracker.model.messages.MessageBase
 import it.vandillen.tracker.model.Parser
 import it.vandillen.tracker.net.MessageProcessorEndpoint
@@ -53,6 +56,7 @@ class FirestoreMessageProcessorEndpoint(
   private var _uniqueId: String = "UNKNOWN-ID"
 
   private var _appVersion: String = "N/A"
+  private var tokenJob: Job? = null
 
   private fun PackageManager.getPackageInfoCompat(packageName: String): PackageInfo =
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -83,6 +87,18 @@ class FirestoreMessageProcessorEndpoint(
       _fcmToken = cached
       scope.launch { endpointStateRepo.firestoreFcmToken.emit(cached) }
     }
+
+    // Subscribe to token updates so this endpoint always uses the latest value
+    tokenJob?.cancel()
+    tokenJob = scope.launch(ioDispatcher) {
+      endpointStateRepo.firestoreFcmToken.collectLatest { token ->
+        if (token.isNotBlank()) {
+          _fcmToken = token
+          Timber.d("FCM token updated in endpoint: ${token.take(16)}…")
+        }
+      }
+    }
+
     // Always attempt a background refresh to keep it current
     fcmTokenManager.refreshToken()
   }
@@ -141,6 +157,8 @@ class FirestoreMessageProcessorEndpoint(
 
   override fun deactivate() {
     Timber.d("FirestoreMessageProcessorEndpoint deactivated")
+    tokenJob?.cancel()
+    tokenJob = null
     // Clean up resources if needed
   }
 

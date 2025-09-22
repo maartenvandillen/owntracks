@@ -14,6 +14,9 @@ import kotlinx.coroutines.Dispatchers;
 @AndroidEntryPoint
 class JachtseizoenFirebaseMessagingService : FirebaseMessagingService() {
 
+  @javax.inject.Inject
+  lateinit var endpointStateRepo: EndpointStateRepo
+
   /**
      * Called if the FCM registration token is updated. This may occur if the security of
      * the previous token had been compromised. Note that this is called when the
@@ -21,8 +24,8 @@ class JachtseizoenFirebaseMessagingService : FirebaseMessagingService() {
      */
     override fun onNewToken(token: String) {
       Timber.d("Refreshed token: $token")
-      // Persist and broadcast updated token
-      val manager = FcmTokenManager(applicationContext, CoroutineScope(Dispatchers.IO), EndpointStateRepo())
+      // Persist and broadcast updated token to the shared repo (observed by endpoint)
+      val manager = FcmTokenManager(applicationContext, CoroutineScope(Dispatchers.IO), endpointStateRepo)
       manager.updateTokenFromService(token)
     }
 
