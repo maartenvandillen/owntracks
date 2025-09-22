@@ -120,13 +120,15 @@ class FirestoreMessageProcessorEndpoint(
             // expose last message sent timestamp for UI overlay
             scope.launch { endpointStateRepo.firestoreLastSentMillis.emit(System.currentTimeMillis()) }
             Timber.d("Message sent to Firestore successfully: $message")
+            Result.success(Unit)
           } else {
             Timber.d("Message NOT sent to Firestore (no tenant)")
+            Result.failure<Unit>(Exception("Message NOT sent to Firestore (no tenant)"))
           }
         } else {
           Timber.d("Message NOT sent to Firestore (no unique device id)")
+          Result.failure<Unit>(Exception("Message NOT sent to Firestore (no unique device id)"))
         }
-        Result.success(Unit)
       } else {
         Timber.d("Message was not a MessageLocation instance: $message")
         Result.failure(Exception("Message was not a MessageLocation instance"))
