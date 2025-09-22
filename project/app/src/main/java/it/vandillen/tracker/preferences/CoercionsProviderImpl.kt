@@ -25,6 +25,10 @@ class CoercionsProviderImpl : CoercionsProvider {
       Preferences::port -> {
         (value as Int).coerceAtLeast(1).coerceAtMost(65535)
       }
+      Preferences::tid -> {
+        // Keep only alphanumeric, take at most two chars
+        (value as String).filter { Character.isLetterOrDigit(it) }.take(2)
+      }
       else -> value
     }
         as T

@@ -296,7 +296,7 @@ constructor(
 
   @Preference(exportModeMqtt = true) var tlsClientCrt: String by preferencesStore
 
-  @Preference var tid: StringMaxTwoAlphaNumericChars by preferencesStore
+  @Preference var tid: String by preferencesStore
 
   @Preference(exportModeHttp = true) var url: String by preferencesStore
 

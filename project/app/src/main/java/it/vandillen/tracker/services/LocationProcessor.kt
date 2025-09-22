@@ -118,7 +118,7 @@ constructor(
             }
             .apply {
               this.trigger = trigger
-              trackerId = preferences.tid.toString()
+              trackerId = preferences.tid
               inregions = calculateInRegions(loadedWaypoints)
               ssid = preferences.deviceId                       //ugly hack: reusing ssid field here to pass device id into message
             }
@@ -216,7 +216,7 @@ constructor(
         MessageTransition().apply {
           setTransition(transition)
           this.trigger = trigger
-          trackerId = preferences.tid.toString()
+          trackerId = preferences.tid
           latitude = triggeringLocation.latitude
           longitude = triggeringLocation.longitude
           accuracy = triggeringLocation.accuracy.roundToInt()

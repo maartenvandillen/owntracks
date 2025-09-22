@@ -436,7 +436,7 @@ class MapActivity :
   }
 
   private fun updateTenant() {
-    val tenant = "${preferences.tid?.toString()?.uppercase() ?: ""}"
+    val tenant = "${preferences.tid?.uppercase() ?: ""}"
     val tenantValid = tenant.length == 2
     binding.tenantIcon.setImageResource(
       if (tenantValid) R.drawable.ic_baseline_done_24 else R.drawable.baseline_clear_24
