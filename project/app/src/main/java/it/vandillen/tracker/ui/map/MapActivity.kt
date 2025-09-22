@@ -840,6 +840,8 @@ class MapActivity :
 
     // Listen for preference changes to update interval live
     preferences.registerOnPreferenceChangedListener(this)
+    // Refresh overlays that depend on Preferences in case they changed while stopped
+    updateTenant()
 
     bindService(
         Intent(this, BackgroundService::class.java), serviceConnection, Context.BIND_AUTO_CREATE)
