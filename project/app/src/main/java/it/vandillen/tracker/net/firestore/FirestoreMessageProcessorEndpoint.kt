@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import it.vandillen.tracker.net.firestore.FcmTokenManager
+import it.vandillen.tracker.data.EndpointState
 
 class FirestoreMessageProcessorEndpoint(
   messageProcessor: MessageProcessor,
@@ -101,6 +102,9 @@ class FirestoreMessageProcessorEndpoint(
 
     // Always attempt a background refresh to keep it current
     fcmTokenManager.refreshToken()
+
+    // Firestore is stateless; once activated, consider endpoint ready/idle so the UI moves off INITIAL
+    scope.launch { endpointStateRepo.setState(EndpointState.IDLE) }
   }
 
   override suspend fun sendMessage(message: MessageBase): Result<Unit> {
@@ -130,27 +134,35 @@ class FirestoreMessageProcessorEndpoint(
 
           val tenant = message.trackerId?.uppercase() ?: "NEW"
           if (tenant != "") {
+            scope.launch { endpointStateRepo.setState(EndpointState.CONNECTING) }
             val docRef = firestore.collection("tenants/" + tenant + "/trackers").document("$name-$_uniqueId")
             docRef.set(data, SetOptions.merge()).await()
 
             // expose last message sent timestamp for UI overlay
-            scope.launch { endpointStateRepo.firestoreLastSentMillis.emit(System.currentTimeMillis()) }
+            scope.launch {
+              endpointStateRepo.firestoreLastSentMillis.emit(System.currentTimeMillis())
+              endpointStateRepo.setState(EndpointState.IDLE)
+            }
             Timber.d("Message sent to Firestore successfully: $message")
             Result.success(Unit)
           } else {
             Timber.d("Message NOT sent to Firestore (no tenant)")
+            scope.launch { endpointStateRepo.setState(EndpointState.ERROR.withMessage("No tenant")) }
             Result.failure<Unit>(Exception("Message NOT sent to Firestore (no tenant)"))
           }
         } else {
           Timber.d("Message NOT sent to Firestore (no unique device id)")
+          scope.launch { endpointStateRepo.setState(EndpointState.ERROR.withMessage("No unique device id")) }
           Result.failure<Unit>(Exception("Message NOT sent to Firestore (no unique device id)"))
         }
       } else {
         Timber.d("Message was not a MessageLocation instance: $message")
+        scope.launch { endpointStateRepo.setState(EndpointState.ERROR.withMessage("Invalid message type")) }
         Result.failure(Exception("Message was not a MessageLocation instance"))
       }
     } catch (e: Exception) {
       Timber.e(e, "Failed to send message to Firestore")
+      scope.launch { endpointStateRepo.setState(EndpointState.ERROR.withError(e)) }
       Result.failure(e)
     }
   }

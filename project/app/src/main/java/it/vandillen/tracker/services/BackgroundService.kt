@@ -222,6 +222,7 @@ class BackgroundService : LifecycleService(), Preferences.OnPreferenceChangeList
             ongoingNotification.setEndpointState(
                 it,
                 if (preferences.mode == ConnectionMode.MQTT) preferences.host
+                else if (preferences.mode == ConnectionMode.FIRESTORE) "Firestore"
                 else preferences.url.toHttpUrlOrNull()?.host ?: "")
           }
         }
