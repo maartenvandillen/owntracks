@@ -49,6 +49,7 @@ import javax.inject.Inject
 import javax.inject.Named
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import it.vandillen.tracker.R
 import it.vandillen.tracker.databinding.UiMapBinding
 import it.vandillen.tracker.location.roundForDisplay
@@ -97,6 +98,9 @@ class MapActivity :
   private var sensorManager: SensorManager? = null
   private var orientationSensor: Sensor? = null
   private lateinit var binding: UiMapBinding
+
+  // Cache last sent timestamp for periodic/icon refresh
+  private var lastSentMillisCache: Long? = null
 
   private lateinit var locationServicesAlertDialog: AlertDialog
 
@@ -331,14 +335,23 @@ class MapActivity :
         }
       }
 
-      // last sent timestamp updates
+      // last sent timestamp updates with periodic refresh
+
+      // Collect updates to last sent timestamp
       launch {
         endpointStateRepo.firestoreLastSentMillis.collectLatest { ts ->
-          val text = if (ts == null) "Last sent: -" else {
-            val fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault())
-            "Last sent: ${fmt.format(Instant.ofEpochMilli(ts))}"
-          }
-          binding.statusLastSent.text = text
+          lastSentMillisCache = ts
+          updateLastSentUi(ts)
+        }
+      }
+      // Initialize UI if we have a cached value already (e.g., after rotation)
+      updateLastSentUi(lastSentMillisCache)
+
+      // Periodically refresh the icon based on current time and interval, even without new ts
+      launch {
+        while (true) {
+          delay(2L * preferences.moveModeLocatorInterval * 1000L)
+          updateLastSentUi(lastSentMillisCache)
         }
       }
 
@@ -406,11 +419,41 @@ class MapActivity :
     binding.statusTenant.text = "Tenant: ${tenant}"
   }
 
+  private fun updateLastSentUi(ts: Long?) {
+    val text = if (ts == null) "Last sent: -" else {
+      val fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault())
+      "Last sent: ${fmt.format(Instant.ofEpochMilli(ts))}"
+    }
+    binding.statusLastSent.text = text
+
+    val iconRes: Int
+    val tintColor: Int
+    if (ts == null) {
+      iconRes = R.drawable.baseline_clear_24
+      tintColor = resources.getColor(R.color.log_error_tag_color, theme)
+    } else {
+      val now = System.currentTimeMillis()
+      val thresholdMillis = 2L * preferences.moveModeLocatorInterval * 1000L
+      val age = now - ts
+      if (age in 0..thresholdMillis) {
+        iconRes = R.drawable.ic_baseline_done_24
+        tintColor = resources.getColor(R.color.log_info_tag_color, theme)
+      } else {
+        iconRes = R.drawable.ic_baseline_warning_24
+        tintColor = resources.getColor(R.color.log_warning_tag_color, theme)
+      }
+    }
+    binding.statusLastSentIcon.setImageResource(iconRes)
+    ImageViewCompat.setImageTintList(binding.statusLastSentIcon, ColorStateList.valueOf(tintColor))
+  }
+
   override fun onPreferenceChanged(properties: Set<String>) {
     // Update interval live when preference changes
     if (properties.contains(Preferences::moveModeLocatorInterval.name)) {
       runOnUiThread {
         binding.statusInterval.text = "Interval: ${preferences.moveModeLocatorInterval} s"
+        // Also refresh lastSent icon state as threshold depends on interval
+        updateLastSentUi(lastSentMillisCache)
       }
     }
 
