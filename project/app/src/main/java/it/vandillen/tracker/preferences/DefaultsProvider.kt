@@ -70,7 +70,7 @@ interface DefaultsProvider {
       Preferences::tls -> true
       Preferences::tlsClientCrt -> ""
 //      Preferences::tid -> StringMaxTwoAlphaNumericChars(preferences.deviceId.takeLast(2).ifEmpty { "na" })
-      Preferences::tid -> ""
+      Preferences::tid -> StringMaxTwoAlphaNumericChars("")
       Preferences::url -> ""
       Preferences::userDeclinedEnableLocationPermissions -> false
       Preferences::userDeclinedEnableBackgroundLocationPermissions -> false
