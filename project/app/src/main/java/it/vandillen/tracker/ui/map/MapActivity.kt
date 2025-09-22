@@ -304,7 +304,8 @@ class MapActivity :
         enableLocationMenus()
         binding.vm?.run { updateActiveContactDistanceAndBearing(location) }
         val acc = try { String.format("%.1f", location.accuracy) } catch (e: Exception) { "-" }
-        binding.statusGps.text = "GPS: Fix OK (${acc} m accuracy)"
+        val fmt = DateTimeFormatter.ofPattern("HH:mm:ss").withZone(ZoneId.systemDefault())
+        binding.statusGps.text = "GPS: Fix OK at ${fmt.format(Instant.ofEpochMilli(location.time))} (${acc} m acc.)"
         binding.gpsIcon.setImageResource(R.drawable.ic_baseline_done_24)
         ImageViewCompat.setImageTintList(binding.gpsIcon, ColorStateList.valueOf(resources.getColor(R.color.log_info_tag_color, theme)))
       }
@@ -803,6 +804,7 @@ class MapActivity :
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
     val inflater = menuInflater
     inflater.inflate(R.menu.activity_map, menu)
+    menu.setGroupVisible(0, false)    //disable menu
     this.menu = menu
     updateMonitoringModeMenu()
     viewModel.updateMyLocationStatus()
