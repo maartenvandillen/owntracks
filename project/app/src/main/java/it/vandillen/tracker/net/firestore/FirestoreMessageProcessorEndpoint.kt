@@ -29,6 +29,7 @@ import java.util.Calendar
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import it.vandillen.tracker.net.firestore.FcmTokenManager
 
 class FirestoreMessageProcessorEndpoint(
   messageProcessor: MessageProcessor,
@@ -41,12 +42,14 @@ class FirestoreMessageProcessorEndpoint(
   private val ioDispatcher: CoroutineDispatcher,
 ) : MessageProcessorEndpoint(messageProcessor) {
 
+  private val fcmTokenManager = FcmTokenManager(context, scope, endpointStateRepo)
+
   override fun onFinalizeMessage(message: MessageBase): MessageBase = message
 
   override val modeId: ConnectionMode = ConnectionMode.FIRESTORE
 
   private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-  private var _fcmToken: String = "UNKNOWN-FCM"
+  private var _fcmToken: String = fcmTokenManager.getCachedToken() ?: "UNKNOWN-FCM"
   private var _uniqueId: String = "UNKNOWN-ID"
 
   private var _appVersion: String = "N/A"
@@ -74,31 +77,13 @@ class FirestoreMessageProcessorEndpoint(
       }
     }
 
-    FirebaseMessaging.getInstance().token.addOnCompleteListener(
-      OnCompleteListener { task ->
-        if (!task.isSuccessful) {
-          // give it another go shortly
-          scope.launch {
-            delay(2000)
-            FirebaseMessaging.getInstance().token.addOnCompleteListener(
-                OnCompleteListener OnCompleteListener2@{ task2 ->
-                  if (!task2.isSuccessful) {
-                    return@OnCompleteListener2
-                  }
-                  _fcmToken = task2.result
-                  // publish token to repo for UI
-                  scope.launch { endpointStateRepo.firestoreFcmToken.emit(_fcmToken) }
-                }
-            )
-          }
-        }
-
-        // Get new FCM registration token
-        _fcmToken = task.result
-        // publish token to repo for UI
-        scope.launch { endpointStateRepo.firestoreFcmToken.emit(_fcmToken) }
-      }
-    )
+    // Try cached FCM token first; refresh asynchronously
+    fcmTokenManager.getCachedToken()?.let { cached ->
+      _fcmToken = cached
+      scope.launch { endpointStateRepo.firestoreFcmToken.emit(cached) }
+    }
+    // Always attempt a background refresh to keep it current
+    fcmTokenManager.refreshToken()
   }
 
   override suspend fun sendMessage(message: MessageBase): Result<Unit> {

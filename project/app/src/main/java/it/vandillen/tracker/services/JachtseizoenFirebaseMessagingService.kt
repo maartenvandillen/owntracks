@@ -6,6 +6,10 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import it.vandillen.tracker.net.firestore.FcmTokenManager
+import it.vandillen.tracker.data.repos.EndpointStateRepo
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.Dispatchers;
 
 @AndroidEntryPoint
 class JachtseizoenFirebaseMessagingService : FirebaseMessagingService() {
@@ -17,7 +21,9 @@ class JachtseizoenFirebaseMessagingService : FirebaseMessagingService() {
      */
     override fun onNewToken(token: String) {
       Timber.d("Refreshed token: $token")
-//        TODO: sendRegistrationToServer(token)
+      // Persist and broadcast updated token
+      val manager = FcmTokenManager(applicationContext, CoroutineScope(Dispatchers.IO), EndpointStateRepo())
+      manager.updateTokenFromService(token)
     }
 
   override fun onMessageReceived(remoteMessage: RemoteMessage) {
