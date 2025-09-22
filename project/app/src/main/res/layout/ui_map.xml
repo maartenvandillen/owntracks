@@ -28,8 +28,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            android:background="#B3000000"
-            android:elevation="12dp"
+            android:background="#FFFFFF"
+            android:elevation="2dp"
             android:layout_gravity="center"
             tools:ignore="UseCompoundDrawables">
 
@@ -37,17 +37,33 @@
                 android:id="@+id/statusDeviceId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FFFFFF"
+                android:textColor="#000000"
                 android:textSize="18sp"
                 tools:text="Device: device123" />
 
-            <TextView
-                android:id="@+id/statusTenant"
+            <!-- Tenant with icon-->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                tools:text="Tenant: CE" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/tenantIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="6dp"
+                    android:contentDescription="@string/na"
+                    tools:src="@drawable/ic_baseline_done_24" />
+
+                <TextView
+                    android:id="@+id/statusTenant"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    tools:text="Tenant: CE" />
+            </LinearLayout>
 
             <!-- Connection status with icon -->
             <LinearLayout
@@ -68,7 +84,7 @@
                     android:id="@+id/statusConnection"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#000000"
                     android:textSize="18sp"
                     tools:text="Conn: ONLINE" />
             </LinearLayout>
@@ -92,24 +108,43 @@
                     android:id="@+id/statusFcm"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#000000"
                     android:textSize="18sp"
                     tools:text="FCM: abc..." />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/statusGps"
+            <!-- GPS status with icon-->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                tools:text="GPS: FIX (3.2 m)" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/gpsIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="6dp"
+                    android:src="@drawable/baseline_clear_24"
+                    android:tint="@color/log_error_tag_color"
+                    android:contentDescription="@string/na"
+                    tools:src="@drawable/ic_baseline_done_24" />
+
+                <TextView
+                    android:id="@+id/statusGps"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:text="GPS:"
+                    tools:text="GPS: FIX (3.2 m)" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/statusLastSent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FFFFFF"
+                android:textColor="#000000"
                 android:textSize="18sp"
                 tools:text="Last sent: 2025-09-19 10:41" />
 
@@ -117,7 +152,7 @@
                 android:id="@+id/statusInterval"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FFFFFF"
+                android:textColor="#000000"
                 android:textSize="18sp"
                 tools:text="Interval: 60 s" />
         </LinearLayout>
@@ -129,6 +164,7 @@
             android:layout_gravity="bottom|end"
             android:contentDescription="@string/mapLayerDialogTitle"
             android:src="@drawable/ic_baseline_layers_24"
+            android:visibility="gone"
             app:fabSize="normal"
             app:layout_anchor="@+id/mapFragment"
             app:layout_anchorGravity="top|end"
@@ -141,6 +177,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:contentDescription="@string/currentLocationButtonLabel"
+            android:visibility="gone"
             app:backgroundTint="@color/fabMyLocationBackground"
             app:borderWidth="1dp"
             app:layout_anchor="@+id/bottomSheetLayout"

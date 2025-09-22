@@ -59,7 +59,6 @@ import it.vandillen.tracker.services.BackgroundService
 import it.vandillen.tracker.services.BackgroundService.Companion.BACKGROUND_LOCATION_RESTRICTION_NOTIFICATION_TAG
 import it.vandillen.tracker.support.ContactImageBindingAdapter
 import it.vandillen.tracker.support.DeviceMetricsProvider
-import it.vandillen.tracker.support.DrawerProvider
 import it.vandillen.tracker.support.RequirementsChecker
 import it.vandillen.tracker.test.CountingIdlingResourceShim
 import it.vandillen.tracker.test.SimpleIdlingResource
@@ -272,11 +271,15 @@ class MapActivity :
       if (location == null) {
         disableLocationMenus()
         binding.statusGps.text = "GPS: NO FIX"
+        binding.gpsIcon.setImageResource(R.drawable.baseline_clear_24)
+        ImageViewCompat.setImageTintList(binding.gpsIcon, ColorStateList.valueOf(resources.getColor(R.color.log_error_tag_color, theme)))
       } else {
         enableLocationMenus()
         binding.vm?.run { updateActiveContactDistanceAndBearing(location) }
         val acc = try { String.format("%.1f", location.accuracy) } catch (e: Exception) { "-" }
-        binding.statusGps.text = "GPS: FIX (${acc} m)"
+        binding.statusGps.text = "GPS: Fix OK (${acc} m accuracy)"
+        binding.gpsIcon.setImageResource(R.drawable.ic_baseline_done_24)
+        ImageViewCompat.setImageTintList(binding.gpsIcon, ColorStateList.valueOf(resources.getColor(R.color.log_info_tag_color, theme)))
       }
     }
     viewModel.currentMonitoringMode.observe(this) { updateMonitoringModeMenu() }
@@ -289,9 +292,13 @@ class MapActivity :
         val isOnline = !conn.equals("offline", ignoreCase = true)
         updateConnectionStatus(isOnline)
       }
-      // device id and tenant
+
+      // device id
       binding.statusDeviceId.text = "Device: ${preferences.deviceId}"
-      binding.statusTenant.text = "Tenant: ${preferences.tid?.toString()?.uppercase() ?: ""}"
+
+      // tenant
+      updateTenant()
+
       // FCM token updates
       launch {
         endpointStateRepo.firestoreFcmToken.collectLatest { token ->
@@ -357,7 +364,7 @@ class MapActivity :
 
   private fun updateConnectionStatus(isOnline: Boolean) {
     val state = if (isOnline) "ONLINE" else "OFFLINE"
-    binding.statusConnection.text = "Conn: $state"
+    binding.statusConnection.text = "Internet: $state"
     binding.statusConnectionIcon.setImageResource(
       if (isOnline) R.drawable.ic_baseline_done_24 else R.drawable.baseline_clear_24
     )
@@ -368,11 +375,38 @@ class MapActivity :
     ImageViewCompat.setImageTintList(binding.statusConnectionIcon, ColorStateList.valueOf(tint))
   }
 
+  private fun updateTenant() {
+    val tenant = "${preferences.tid?.toString()?.uppercase() ?: ""}"
+    val tenantValid = tenant.length == 2
+    binding.tenantIcon.setImageResource(
+      if (tenantValid) R.drawable.ic_baseline_done_24 else R.drawable.baseline_clear_24
+    )
+    val tenantTint = if (tenantValid)
+      resources.getColor(R.color.log_info_tag_color, theme)
+    else
+      resources.getColor(R.color.log_error_tag_color, theme)
+    ImageViewCompat.setImageTintList(binding.tenantIcon, ColorStateList.valueOf(tenantTint))
+    binding.statusTenant.text = "Tenant: ${tenant}"
+  }
+
   override fun onPreferenceChanged(properties: Set<String>) {
+    // Update interval live when preference changes
     if (properties.contains(Preferences::moveModeLocatorInterval.name)) {
       runOnUiThread {
         binding.statusInterval.text = "Interval: ${preferences.moveModeLocatorInterval} s"
       }
+    }
+
+    // Update device id in status overlay when changed
+    if (properties.contains(Preferences::deviceId.name)) {
+      runOnUiThread {
+        binding.statusDeviceId.text = "Device: ${preferences.deviceId}"
+      }
+    }
+
+    // Update tenant in status overlay when changed
+    if (properties.contains(Preferences::tid.name)) {
+      runOnUiThread { updateTenant() }
     }
   }
 
