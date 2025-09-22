@@ -268,7 +268,7 @@ dependencies {
   implementation(libs.paho.mqttclient)
   implementation(libs.okhttp)
 
-  implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
+  implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
   implementation("com.google.firebase:firebase-analytics")
   implementation("com.google.firebase:firebase-firestore")
   implementation("com.google.firebase:firebase-messaging")
