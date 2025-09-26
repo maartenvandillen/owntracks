@@ -26,13 +26,13 @@ val packageVersionCode: Int = 6
 val manuallySetVersion: Boolean = System.getenv("VERSION_CODE") != null
 
 android {
-  compileSdk = 34
+  compileSdk = 35
   namespace = "it.vandillen.tracker"
 
   defaultConfig {
     applicationId = "it.vandillen.tracker"
     minSdk = 24
-    targetSdk = 34
+    targetSdk = 35
 
     versionCode = packageVersionCode
     versionName = "3.0.3"
